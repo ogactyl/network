@@ -1,8 +1,12 @@
-# Use the base image
-FROM modenaf360/gotty:latest
- 
-# Expose the desired port
-EXPOSE 8080
- 
-# Start Gotty with the specified command
-CMD ["gotty", "-r", "-w", "--port", "8080", "/bin/bash"]
+FROM codercom/code-server:latest
+
+WORKDIR /home/coder/project
+
+# Password set karo
+ENV PASSWORD=123456
+
+# Port HF ka default
+EXPOSE 7860
+
+# Code-server start
+CMD ["code-server", "--bind-addr", "0.0.0.0:7860", "--auth", "password"]
