@@ -1,12 +1,29 @@
-FROM codercom/code-server:latest
+FROM ubuntu:22.04
 
-WORKDIR /home/coder/project
+ENV DEBIAN_FRONTEND=noninteractive
 
-# Password set karo
-ENV PASSWORD=123456
+# Basic packages install
+RUN apt-get update && apt-get install -y \
+    curl \
+    wget \
+    git \
+    sudo \
+    python3 \
+    python3-pip \
+    && rm -rf /var/lib/apt/lists/*
 
-# Port HF ka default
+# code-server install
+RUN curl -fsSL https://code-server.dev/install.sh | sh
+
+# user create
+RUN useradd -m coder
+RUN echo "coder ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+USER coder
+WORKDIR /home/coder
+
+# port expose
 EXPOSE 7860
 
-# Code-server start
-CMD ["code-server", "--bind-addr", "0.0.0.0:7860", "--auth", "password"]
+# start code-server
+CMD ["code-server", "--bind-addr", "0.0.0.0:7860", "--auth", "none"]
